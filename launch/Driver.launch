@@ -1,0 +1,10 @@
+<launch>
+    <!-- RPLidar -->
+	<include file="$(find rugby_realsense)/launch/includes/rplidar.launch.xml" />    
+
+    <!-- R200 -->
+    <include file="$(find realsense_camera)/launch/r200_nodelet_rgbd.launch" />
+
+    <!-- Car Driver -->
+    <include file="$(find rugby_realsense)/launch/TX1/tx1_pyserial_ekf.launch.xml"/>
+</launch>

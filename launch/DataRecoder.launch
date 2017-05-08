@@ -1,0 +1,16 @@
+<launch>
+    <!-- Laser to Image -->
+    <node pkg="tx1_cnn_driver" type="LaserToImage" name="LaserToImage" />
+
+    <!-- Dropping images -->
+    <node pkg="topic_tools"    type="drop"  name="dropRGB"   args= "camera/rgb/image_rect_color 1 2 camera/rgb/image_rect_color_drop" />
+    <node pkg="topic_tools"    type="drop"  name="dropDepth" args= "camera/depth/image_rect_raw 1 2 camera/depth/image_rect_raw_drop" />	
+    
+    <!-- Start recording -->
+    <node pkg="tx1_cnn_driver" type="dataRecorder.py" name="dataset_recorder" >
+        <param name="depth_dir"  value="$(find tx1_cnn_driver)/data/DepthIMG/"/>
+        <param name="rgb_dir"    value="$(find tx1_cnn_driver)/data/TrainingIMG/"/>
+        <param name="lidar_dir"  value="$(find tx1_cnn_driver)/data/LidarIMG/"/>
+        <remap from="/cmd_vel" to="/rugby/cmd_vel" />
+    </node>
+</launch>
