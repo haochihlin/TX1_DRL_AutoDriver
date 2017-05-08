@@ -48,8 +48,8 @@ This node saves multiple image topics as pictures and encodes the filename with 
 I know what rosbag is.
 
 Note: 
-Throttle values are remapped as: 0.0-0.5 = reverse and 0.5-1.0 = forward
-Steering values are remapped as: 0.0-0.5 = left and 0.5-1.0 = right, 0.5 is center position
+Throttle values are re-mapped as ( ori+0.5)/2: 0.0-0.5 = reverse and 0.5-1.0 = forward
+Steering values are re-mapped as (-ori+0.5)/3: 0.0-0.5 = left and 0.5-1.0 = right, 0.5 is center position
 This node is recieving the output topic of drop nodes that are dropping 2 out of 3 frames for the depth and rgb image topics.
 The node struggles to record both rgb and depth topic at 30FPS with cv2.imwrite on the TX1 which is why messages are being dropped plus 30FPS seems to be unnecessary
 Gstreamer could be used to create a similar function like cv2.imwrite that utilizes the onboard hardware encoders for jpg (nvjpg) this could allow for more FPS or image topics to be saved as jpg
@@ -150,8 +150,8 @@ class dataRecorder(object):
         ##rospy.loginfo("Angular: [%f, %f, %f]"%(msg.angular.x, msg.angular.y, msg.angular.z))
         with self.twistLock:
             msg_temp = msg
-            msg_temp.linear.x  = msg_temp.linear.x + 0.5
-            msg_temp.angular.z = -msg_temp.angular.z + 0.5
+            msg_temp.linear.x  = (msg_temp.linear.x + 0.5)/2.0
+            msg_temp.angular.z = (-msg_temp.angular.z + 0.5)/3.0
             if msg_temp.linear.x >= 1.0:
                 msg_temp.linear.x = 1.0
             if msg_temp.linear.x <= 0.0:
